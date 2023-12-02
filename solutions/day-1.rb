@@ -81,9 +81,9 @@ def solve_part_two
 end
 
 case part
-when "one"
+when "1"
   solve_part_one
-when "two"
+when "2"
   solve_part_two
 else
   raise "Invalid part!"
