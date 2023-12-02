@@ -19,4 +19,9 @@ def download_input(url, filename)
   end
 end
 
-download_input(url, "input/day-#{day_number}.txt")
+begin
+  download_input(url, "input/day-#{day_number}.txt")
+  puts "Downloaded input for day #{day_number}"
+rescue => e
+  puts "Error downloading input for day #{day_number}: #{e}"
+end
