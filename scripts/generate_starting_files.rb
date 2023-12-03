@@ -31,7 +31,7 @@ RUBY
 
 Dir.mkdir("solutions") unless Dir.exist?("solutions")
 Dir.mkdir("test") unless Dir.exist?("test")
-File.write("solutions/day-#{number}.rb", solution_file_contents)
+File.write("solutions/ruby/day-#{number}.rb", solution_file_contents)
 File.write("test/day-#{number}-part-1.txt", "")
 File.write("test/day-#{number}-part-2.txt", "")
 
