@@ -1,6 +1,6 @@
 part = ARGV[0]
-# filepath = "input/day-3.txt"
-filepath = "test/day-3-part-1.txt"
+filepath = "input/day-3.txt"
+# filepath = "test/day-3-part-1.txt"
 # filepath = "test/day-3-part-2.txt"
 file = File.open(filepath, "r")
 @lines = file.read.split("\n")
@@ -25,6 +25,51 @@ def get_current_line_part_numbers(line_checked, line, coordinate)
   current_line_part_numbers
 end
 
+def get_gear_part_number_for_line(line_index, gear_position_info)
+  line_coordinates = get_line_coordinates(line_index)
+  part_numbers = []
+
+  line_coordinates.each do |coordinate|
+    if position_within_range?(coordinate, gear_position_info[:position])
+      part_numbers << @lines[line_index][coordinate[:start]..coordinate[:end]].to_i
+    end
+  end
+
+  part_numbers
+end
+
+def get_gear_part_numbers(gear_position_info, line_index)
+  part_numbers = []
+
+  if line_index == 0
+    line_after_part_numbers = get_gear_part_number_for_line(line_index + 1, gear_position_info)
+    line_part_numbers = get_gear_part_number_for_line(line_index, gear_position_info)
+
+    part_numbers.concat((line_after_part_numbers + line_part_numbers).uniq)
+  elsif line_index == @lines.length - 1
+    line_before_part_numbers = get_gear_part_number_for_line(line_index - 1, gear_position_info)
+    line_part_numbers = get_gear_part_number_for_line(line_index, gear_position_info)
+
+    part_numbers.concat((line_before_part_numbers + line_part_numbers).uniq)
+  else
+    line_after_part_numbers = get_gear_part_number_for_line(line_index + 1, gear_position_info)
+    line_before_part_numbers = get_gear_part_number_for_line(line_index - 1, gear_position_info)
+    line_part_numbers = get_gear_part_number_for_line(line_index, gear_position_info)
+
+    part_numbers.concat((line_after_part_numbers + line_before_part_numbers + line_part_numbers).uniq)
+  end
+
+  part_numbers
+end
+
+def get_line_coordinates(line_index)
+  line_number_positions = parse_line_with_numbers
+
+  line_number_positions
+    .select { |line_number_position| line_number_position[:line] == line_index }
+    .map { |hash| {start: hash[:start], end: hash[:end]} }
+end
+
 def get_range_start(coordinate)
   if coordinate[:start] == 0
     coordinate[:start]
@@ -43,6 +88,20 @@ end
 
 def is_symbol?(char)
   !!char.match?(/[^\w\s.]/)
+end
+
+def parse_line_with_gears
+  line_gear_positions = []
+
+  @lines.each_with_index do |line, line_index|
+    line.chars.each_with_index do |char, char_index|
+      if char.match?(/\*/)
+        line_gear_positions << {line: line_index, position: char_index}
+      end
+    end
+  end
+
+  line_gear_positions
 end
 
 def parse_line_with_numbers
@@ -71,6 +130,13 @@ def parse_line_with_numbers
   end
 
   line_number_positions
+end
+
+def position_within_range?(coordinates, position)
+  range_start = (coordinates[:start] - 1 > 0) ? coordinates[:start] - 1 : 0
+  range_end = (coordinates[:end] + 1 < @lines.first.length - 1) ? coordinates[:end] + 1 : @lines.first.length - 1
+
+  (range_start..range_end).include?(position)
 end
 
 def solve_part_one
@@ -113,6 +179,24 @@ def solve_part_one
 end
 
 def solve_part_two
+  line_gear_positions = parse_line_with_gears
+  gear_ratios = []
+
+  @lines.each_with_index do |line, line_index|
+    filtered_gear_positions = line_gear_positions.select { |hash| hash[:line] == line_index }
+
+    next if filtered_gear_positions.empty?
+
+    filtered_gear_positions.each do |gear_position_info|
+      part_numbers = get_gear_part_numbers(gear_position_info, line_index)
+
+      if part_numbers.length == 2
+        gear_ratios << (part_numbers.first * part_numbers.last)
+      end
+    end
+  end
+
+  puts "gear ratios sum: #{gear_ratios.sum}"
 end
 
 case part
