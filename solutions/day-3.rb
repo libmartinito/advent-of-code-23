@@ -136,7 +136,7 @@ def position_within_range?(coordinates, position)
   range_start = (coordinates[:start] - 1 > 0) ? coordinates[:start] - 1 : 0
   range_end = (coordinates[:end] + 1 < @lines.first.length - 1) ? coordinates[:end] + 1 : @lines.first.length - 1
 
-  (range_start..range_end).include?(position)
+  (range_start..range_end).cover?(position)
 end
 
 def solve_part_one
