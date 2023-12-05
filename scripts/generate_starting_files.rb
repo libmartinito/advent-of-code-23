@@ -11,7 +11,7 @@ solution_file_contents = <<~RUBY
   filepath = "test/day-#{number}-part-1.txt"
   # filepath = "test/day-#{number}-part-2.txt"
   file = File.open(filepath, "r")
-  @lines = file.read.split("\n")
+  @lines = file.read.split("\\n")
 
   def solve_part_one
   end
