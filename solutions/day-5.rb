@@ -5,7 +5,7 @@ filepath = "input/day-5.txt"
 file = File.open(filepath, "r")
 @lines = file.read.split("\n\n")
 
-def get_lowest_location(seeds)
+def make_conversion_map
   conversion_map = {}
 
   @lines.each do |line|
@@ -22,31 +22,31 @@ def get_lowest_location(seeds)
     conversion_map[map.first.split(" ").first] = start_to_destination_map
   end
 
-  maps = ["seed-to-soil", "soil-to-fertilizer", "fertilizer-to-water", "water-to-light", "light-to-temperature", "temperature-to-humidity", "humidity-to-location"]
+  conversion_map
+end
 
-  seed_locations = []
+def get_lowest_location(seeds)
+  conversion_map = make_conversion_map
+  locations = []
 
   seeds.each do |seed|
     current_destination = seed.to_i
 
-    maps.each do |map|
-      conversion_map[map].each do |mapping|
-        start = mapping[:start]
-        destination = mapping[:destination]
-        range = mapping[:range]
-        range_to_check = (start..start + range - 1)
+    conversion_map.each do |_, ranges_info|
+      ranges_info.each do |range_info|
+        range_to_check = range_info[:start]..(range_info[:start] + range_info[:range] - 1)
 
         if range_to_check.include?(current_destination)
-          current_destination = destination + (current_destination - start)
+          current_destination = range_info[:destination] + (current_destination - range_info[:start])
           break
         end
       end
     end
 
-    seed_locations << current_destination
+    locations << current_destination
   end
 
-  seed_locations.min
+  locations.min
 end
 
 def solve_part_one
