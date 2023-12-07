@@ -1,6 +1,6 @@
 part = ARGV[0]
-filepath = "input/day-5.txt"
-# filepath = "test/day-5-part-1.txt"
+# filepath = "input/day-5.txt"
+filepath = "test/day-5-part-1.txt"
 # filepath = "test/day-5-part-2.txt"
 file = File.open(filepath, "r")
 @lines = file.read.split("\n\n")
@@ -49,14 +49,51 @@ def get_lowest_location(seeds)
   locations.min
 end
 
+# def get_lowest_location_in_range(seeds_ranges)
+#   conversion_map = make_conversion_map
+#   locations = []
+#
+#   seeds_ranges.each do |seed_range|
+#     current_destination = 0
+#
+#     conversion_map.each do |map, ranges_info|
+#       puts "Map: #{map}"
+#       ranges_info.each do |range_info|
+#         puts "range_info: #{range_info}"
+#         overlapping_range = [seed_range[:start], range_info[:start]].max..[seed_range[:start] + seed_range[:range] - 1, range_info[:start] + range_info[:range] - 1].min
+#         min_value = overlapping_range.begin if overlapping_range.begin < overlapping_range.end
+#         puts "Min value: #{min_value}"
+#         if min_value
+#           current_destination = range_info[:destination] + (min_value - range_info[:start])
+#           puts "Current destination: #{current_destination}"
+#           break
+#         end
+#       end
+#     end
+#
+#     locations << current_destination
+#   end
+#
+#   puts "Locations: #{locations.min}"
+# end
+
 def solve_part_one
   seeds = @lines[0].split(": ").last.split(" ")
   min = get_lowest_location(seeds)
   puts "Minumum location: #{min}"
 end
 
-def solve_part_two
-end
+# def solve_part_two
+#   seeds = @lines[0].split(": ").last.split(" ")
+#   seeds_ranges = []
+#
+#   seeds.each_with_index do |seed, index|
+#     seeds_ranges << {start: seed.to_i, range: seeds[index + 1].to_i} if index.even?
+#   end
+#
+#   puts "Seed ranges: #{seeds_ranges}"
+#   get_lowest_location_in_range(seeds_ranges)
+# end
 
 case part
 when "1"
